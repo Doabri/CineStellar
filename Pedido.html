@@ -1,0 +1,440 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineStellar - Resumen del Pedido</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: #1A1A2E;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            height: 100%;
+        }
+
+        header {
+            background: linear-gradient(to right, #6423E1, #B714DF);
+            padding: 15px;
+            text-align: center;
+            color: white;
+        }
+
+            header h1 {
+                margin: 0;
+                font-size: 2.5em;
+                font-weight: bold;
+            }
+
+            header p {
+                margin: 5px 0 0 0;
+                font-size: 1.1em;
+            }
+
+        .contenedor {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .ticket-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #F10F6E;
+        }
+
+            .ticket-header h2 {
+                color: #F10F6E;
+                margin-bottom: 10px;
+            }
+
+        .lista-productos {
+            margin-bottom: 20px;
+        }
+
+        .producto-item {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-producto {
+            flex: 1;
+        }
+
+            .info-producto h3 {
+                margin: 0 0 5px 0;
+                font-size: 1.1em;
+            }
+
+        .precio-unitario {
+            color: #F10F6E;
+            font-size: 0.9em;
+        }
+
+        .controles-cantidad {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-right: 15px;
+        }
+
+        .btn-cantidad {
+            background: #6423E1;
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+            .btn-cantidad:hover {
+                background: #B714DF;
+            }
+
+        .cantidad {
+            font-size: 1.1em;
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .subtotal {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #F10F6E;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .btn-eliminar {
+            background: transparent;
+            border: 2px solid #F10F6E;
+            color: #F10F6E;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 0.9em;
+        }
+
+            .btn-eliminar:hover {
+                background: #F10F6E;
+                color: white;
+            }
+
+        .resumen-total {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .fila-total {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .total-general {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #F10F6E;
+            padding-top: 10px;
+            border-top: 2px solid #B714DF;
+            margin-top: 10px;
+        }
+
+        .acciones {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-accion {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-volver {
+            background: #2D2D44;
+            color: white;
+        }
+
+            .btn-volver:hover {
+                background: #3D3D5C;
+            }
+
+        .btn-cancelar {
+            background: #F10F6E;
+            color: white;
+        }
+
+            .btn-cancelar:hover {
+                background: #D40A5F;
+            }
+
+        .btn-cobrar {
+            background: #6423E1;
+            color: white;
+        }
+
+            .btn-cobrar:hover {
+                background: #B714DF;
+            }
+
+        .ticket-vacio {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        @media (max-width: 768px) {
+            .contenedor {
+                width: 95%;
+                padding: 15px;
+            }
+
+            .producto-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .controles-cantidad {
+                align-self: flex-end;
+            }
+
+            .acciones {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .producto-item {
+                padding: 10px;
+            }
+
+            .btn-accion {
+                padding: 12px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎬 CineStellar</h1>
+        <p>Resumen de tu pedido</p>
+    </header>
+
+    <div class="contenedor">
+        <div class="ticket-header">
+            <h2>🎟️ TICKET DE COMPRA</h2>
+        </div>
+
+        <div class="lista-productos" id="lista-productos">
+        </div>
+
+        <div class="resumen-total">
+            <div class="fila-total">
+                <span>Subtotal:</span>
+                <span id="subtotal">$0.00</span>
+            </div>
+            <div class="fila-total">
+                <span>IVA (16%):</span>
+                <span id="iva">$0.00</span>
+            </div>
+            <div class="total-general">
+                <span>TOTAL:</span>
+                <span id="total-general">$0.00</span>
+            </div>
+        </div>
+
+        <div class="acciones">
+            <a href="index.html" class="btn-accion btn-volver">
+                ↩️ Volver a Productos
+            </a>
+            <button class="btn-accion btn-cancelar" id="btn-cancelar-todo">
+                🗑️ Cancelar Todo
+            </button>
+            <a href="cobro.html" class="btn-accion btn-cobrar">
+                💳 Proceder al Cobro
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let ticket = JSON.parse(localStorage.getItem("ticket")) || [];
+        const listaProductos = document.getElementById("lista-productos");
+        const subtotalElement = document.getElementById("subtotal");
+        const ivaElement = document.getElementById("iva");
+        const totalGeneralElement = document.getElementById("total-general");
+        const btnCancelarTodo = document.getElementById("btn-cancelar-todo");
+
+        function mostrarTicket() {
+            listaProductos.replaceChildren();
+
+            if (ticket.length === 0) {
+                const ticketVacio = document.createElement("div");
+                ticketVacio.className = "ticket-vacio";
+
+                const titulo = document.createElement("h3");
+                titulo.textContent = "No hay productos en el ticket";
+
+                const mensaje = document.createElement("p");
+                mensaje.textContent = "Agrega productos desde la pantalla de selección";
+
+                ticketVacio.appendChild(titulo);
+                ticketVacio.appendChild(mensaje);
+                listaProductos.appendChild(ticketVacio);
+                return;
+            }
+
+            ticket.forEach((item, index) => {
+                const productoDiv = document.createElement("div");
+                productoDiv.className = "producto-item";
+                const infoProducto = document.createElement("div");
+                infoProducto.className = "info-producto";
+
+                const nombre = document.createElement("h3");
+                nombre.textContent = item.nombre;
+
+                const precioUnitario = document.createElement("div");
+                precioUnitario.className = "precio-unitario";
+                precioUnitario.textContent = `$${item.precio} c/u`;
+
+                infoProducto.appendChild(nombre);
+                infoProducto.appendChild(precioUnitario);
+
+                const controlesCantidad = document.createElement("div");
+                controlesCantidad.className = "controles-cantidad";
+
+                const btnDecrementar = document.createElement("button");
+                btnDecrementar.className = "btn-cantidad";
+                btnDecrementar.textContent = "-";
+                btnDecrementar.dataset.index = index;
+                btnDecrementar.dataset.accion = "decrementar";
+
+                const cantidad = document.createElement("span");
+                cantidad.className = "cantidad";
+                cantidad.textContent = item.cantidad;
+
+                const btnIncrementar = document.createElement("button");
+                btnIncrementar.className = "btn-cantidad";
+                btnIncrementar.textContent = "+";
+                btnIncrementar.dataset.index = index;
+                btnIncrementar.dataset.accion = "incrementar";
+
+                controlesCantidad.appendChild(btnDecrementar);
+                controlesCantidad.appendChild(cantidad);
+                controlesCantidad.appendChild(btnIncrementar);
+
+                const subtotal = document.createElement("div");
+                subtotal.className = "subtotal";
+                subtotal.textContent = `$${(item.precio * item.cantidad).toFixed(2)}`;
+
+                const btnEliminar = document.createElement("button");
+                btnEliminar.className = "btn-eliminar";
+                btnEliminar.textContent = "Eliminar";
+                btnEliminar.dataset.index = index;
+
+                productoDiv.appendChild(infoProducto);
+                productoDiv.appendChild(controlesCantidad);
+                productoDiv.appendChild(subtotal);
+                productoDiv.appendChild(btnEliminar);
+
+                listaProductos.appendChild(productoDiv);
+            });
+
+            calcularTotales();
+        }
+
+        function calcularTotales() {
+            const subtotal = ticket.reduce((total, item) => {
+                return total + (item.precio * item.cantidad);
+            }, 0);
+
+            const iva = subtotal * 0.16;
+            const total = subtotal + iva;
+
+            subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
+            ivaElement.textContent = `$${iva.toFixed(2)}`;
+            totalGeneralElement.textContent = `$${total.toFixed(2)}`;
+        }
+
+        function actualizarCantidad(index, accion) {
+            if (accion === "incrementar") {
+                ticket[index].cantidad++;
+            } else if (accion === "decrementar" && ticket[index].cantidad > 1) {
+                ticket[index].cantidad--;
+            }
+
+            guardarTicket();
+            mostrarTicket();
+        }
+
+        function eliminarProducto(index) {
+            ticket.splice(index, 1);
+            guardarTicket();
+            mostrarTicket();
+        }
+
+        function cancelarTodo() {
+            const codigo = prompt("Ingresa el código de supervisor para cancelar todo el ticket:");
+
+            if (codigo === "1234") {
+                ticket = [];
+                guardarTicket();
+                mostrarTicket();
+                alert("✅ Ticket cancelado exitosamente");
+            } else if (codigo) {
+                alert("❌ Código incorrecto");
+            }
+        }
+
+        function guardarTicket() {
+            localStorage.setItem("ticket", JSON.stringify(ticket));
+        }
+
+        listaProductos.addEventListener("click", function (event) {
+            const target = event.target;
+
+            if (target.classList.contains("btn-cantidad")) {
+                const index = parseInt(target.dataset.index);
+                const accion = target.dataset.accion;
+                actualizarCantidad(index, accion);
+            }
+
+            if (target.classList.contains("btn-eliminar")) {
+                const index = parseInt(target.dataset.index);
+                eliminarProducto(index);
+            }
+        });
+
+        btnCancelarTodo.addEventListener("click", cancelarTodo);
+
+        mostrarTicket();
+    </script>
+</body>
+</html>

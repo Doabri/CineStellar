@@ -1,0 +1,401 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineStellar - Punto de Venta</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: #1A1A2E;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100%;
+        }
+
+        header {
+            background: linear-gradient(to right, #6423E1, #B714DF);
+            padding: 15px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+            header h1 {
+                margin: 0;
+                font-size: 2.5em;
+                font-weight: bold;
+            }
+
+            header p {
+                margin: 5px 0 0 0;
+                font-size: 1.1em;
+            }
+
+        .categorias {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .categoria-btn {
+            padding: 10px 20px;
+            background: #F10F6E;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .categoria-btn.activo {
+                background: #6423E1;
+            }
+
+        .productos {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .producto {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            width: 200px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+
+            .producto:hover {
+                border-color: #B714DF;
+            }
+
+            .producto.seleccionado {
+                border-color: #F10F6E;
+                background-color: #f8f8f8;
+            }
+
+        .producto-img {
+            width: 100%;
+            height: 120px;
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            font-size: 1.5em;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+            .producto-img img {
+                width: 90%;
+                height: 90%;
+                object-fit: contain;
+            }
+
+        .producto-nombre {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .producto-precio {
+            color: #F10F6E;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .producto-cantidad {
+            margin-top: 5px;
+            color: #6423E1;
+            font-weight: bold;
+        }
+
+        .navegacion {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            padding: 20px;
+            background-color: #24243E;
+            border-top: 1px solid #3A3A5E;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+
+        .btn-nav {
+            padding: 15px 30px;
+            background: #6423E1;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.3s;
+        }
+
+            .btn-nav:hover {
+                background: #B714DF;
+            }
+
+        .contador-ticket {
+            background: #F10F6E;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .productos {
+                gap: 15px;
+            }
+
+            .producto {
+                width: 150px;
+            }
+
+            .producto-img {
+                height: 100px;
+            }
+
+            .categorias {
+                flex-wrap: wrap;
+            }
+
+            .navegacion {
+                flex-direction: column;
+                gap: 10px;
+                position: fixed;
+                padding-bottom: 10px;
+            }
+
+            .btn-nav {
+                justify-content: center;
+                width: 90%;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .producto {
+                width: 140px;
+            }
+
+            header h1 {
+                font-size: 2em;
+            }
+
+            header p {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎬 CineStellar</h1>
+        <p id="subtitulo">Selecciona tus productos para la función</p>
+    </header>
+
+    <div class="categorias">
+        <button class="categoria-btn activo" data-categoria="boletos">🎟️ Boletos</button>
+        <button class="categoria-btn" data-categoria="combos">🍿 Combos</button>
+        <button class="categoria-btn" data-categoria="snacks">🥤 Snacks</button>
+    </div>
+
+    <div class="productos" id="productos-container">
+    </div>
+
+    <div class="navegacion">
+        <button class="btn-nav" id="btn-cancelar">
+            🗑️ Cancelar Productos
+        </button>
+        <a href="pedido.html" class="btn-nav" id="btn-ver-ticket">
+            📄 Ver Ticket <span class="contador-ticket" id="contador-ticket">0</span>
+        </a>
+    </div>
+
+    <script>
+        const productos = {
+            boletos: [
+                { id: 1, nombre: "Boleto Adulto", precio: 85, imagen: "boleto-adulto.png" },
+                { id: 2, nombre: "Boleto Estudiante", precio: 45, imagen: "boleto-estudiante.png" },
+                { id: 3, nombre: "Boleto Niño", precio: 40, imagen: "boleto-nino.png" },
+                { id: 4, nombre: "Boleto 3D", precio: 100, imagen: "boleto-3d.png" }
+            ],
+            combos: [
+                { id: 5, nombre: "Combo Familiar", precio: 180, imagen: "combo-familiar.png" },
+                { id: 6, nombre: "Combo Individual", precio: 120, imagen: "combo-individual.png" },
+                { id: 7, nombre: "Combo Pareja", precio: 320, imagen: "combo-pareja.png" }
+            ],
+            snacks: [
+                { id: 8, nombre: "Dulces", precio: 40, imagen: "dulces.png" },
+                { id: 9, nombre: "Hot Dog", precio: 80, imagen: "hotdog.png" },
+                { id: 10, nombre: "Palomitas Chicas", precio: 60, imagen: "palomitas-chicas.png" },
+                { id: 11, nombre: "Palomitas Grandes", precio: 120, imagen: "palomitas-grandes.png" }
+            ]
+        };
+
+        let ticket = JSON.parse(localStorage.getItem("ticket")) || [];
+
+        const productosContainer = document.getElementById("productos-container");
+        const botonesCategoria = document.querySelectorAll(".categoria-btn");
+        const contadorTicket = document.getElementById("contador-ticket");
+        const btnCancelar = document.getElementById("btn-cancelar");
+        let categoriaActual = "boletos"; 
+
+        function crearElementoProducto(producto, cantidad) {
+            const productoDiv = document.createElement("div");
+            productoDiv.className = "producto";
+            productoDiv.dataset.id = producto.id;
+
+            if (cantidad > 0) {
+                productoDiv.classList.add("seleccionado");
+            }
+
+            const imgContainer = document.createElement("div");
+            imgContainer.className = "producto-img";
+
+            const imagen = document.createElement("img");
+            imagen.src = producto.imagen; 
+            imagen.alt = producto.nombre;
+
+            imagen.onerror = function () {
+                imagen.style.display = 'none';
+                imgContainer.textContent = producto.nombre;
+            };
+
+            imgContainer.appendChild(imagen);
+            productoDiv.appendChild(imgContainer);
+
+            const nombreDiv = document.createElement("div");
+            nombreDiv.className = "producto-nombre";
+            nombreDiv.textContent = producto.nombre;
+            productoDiv.appendChild(nombreDiv);
+
+            const precioDiv = document.createElement("div");
+            precioDiv.className = "producto-precio";
+            precioDiv.textContent = `$${producto.precio}`;
+            productoDiv.appendChild(precioDiv);
+
+            if (cantidad > 0) {
+                const cantidadDiv = document.createElement("div");
+                cantidadDiv.className = "producto-cantidad";
+                cantidadDiv.textContent = `${cantidad} en ticket`;
+                productoDiv.appendChild(cantidadDiv);
+            }
+
+            return productoDiv;
+        }
+
+        function mostrarProductos(categoria) {
+            productosContainer.replaceChildren(); 
+
+            productos[categoria].forEach(producto => {
+                const enTicket = ticket.find(item => item.id === producto.id);
+                const cantidad = enTicket ? enTicket.cantidad : 0;
+
+                const productoDiv = crearElementoProducto(producto, cantidad);
+                productosContainer.appendChild(productoDiv);
+            });
+        }
+
+        function actualizarContador() {
+            const totalItems = ticket.reduce((total, item) => total + item.cantidad, 0);
+            contadorTicket.textContent = totalItems;
+        }
+
+        function agregarAlTicket(productoId) {
+            const producto = Object.values(productos)
+                .flat()
+                .find(p => p.id === productoId);
+
+            if (!producto) return;
+
+            const itemExistente = ticket.find(item => item.id === productoId);
+
+            if (itemExistente) {
+                itemExistente.cantidad++;
+            } else {
+                ticket.push({
+                    id: producto.id,
+                    nombre: producto.nombre,
+                    precio: producto.precio,
+                    cantidad: 1,
+                    imagen: producto.imagen
+                });
+            }
+
+            guardarTicket();
+            mostrarProductos(categoriaActual);
+            actualizarContador();
+        }
+
+        function guardarTicket() {
+            localStorage.setItem("ticket", JSON.stringify(ticket));
+        }
+
+        btnCancelar.addEventListener("click", function () {
+            const codigo = prompt("Ingresa el código de supervisor para cancelar todos los productos:");
+
+            if (codigo === "1234") {
+                ticket = [];
+                guardarTicket();
+                mostrarProductos(categoriaActual);
+                actualizarContador();
+                alert("✅ Todos los productos han sido cancelados");
+            } else if (codigo) {
+                alert("❌ Código incorrecto");
+            }
+        });
+
+        productosContainer.addEventListener("click", function (event) {
+            const producto = event.target.closest(".producto");
+            if (producto) {
+                const productoId = parseInt(producto.dataset.id);
+                agregarAlTicket(productoId);
+            }
+        });
+
+        botonesCategoria.forEach(boton => {
+            boton.addEventListener("click", function () {
+                botonesCategoria.forEach(b => b.classList.remove("activo"));
+                this.classList.add("activo");
+
+                categoriaActual = this.dataset.categoria;
+                mostrarProductos(categoriaActual);
+            });
+        });
+
+        mostrarProductos(categoriaActual);
+        actualizarContador();
+    </script>
+</body>
+</html>

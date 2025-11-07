@@ -1,0 +1,394 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineStellar - Proceso de Cobro</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: #1A1A2E;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            height: 100%;
+        }
+
+        header {
+            background: linear-gradient(to right, #6423E1, #B714DF);
+            padding: 15px;
+            text-align: center;
+            color: white;
+        }
+
+            header h1 {
+                margin: 0;
+                font-size: 2.5em;
+                font-weight: bold;
+            }
+
+            header p {
+                margin: 5px 0 0 0;
+                font-size: 1.1em;
+            }
+
+        .contenedor {
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .resumen-compra {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #F10F6E;
+        }
+
+            .resumen-compra h2 {
+                color: #F10F6E;
+                margin-bottom: 15px;
+            }
+
+        .lista-resumen {
+            margin-bottom: 15px;
+        }
+
+        .item-resumen {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+            .item-resumen:last-child {
+                border-bottom: none;
+            }
+
+        .total-final {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #F10F6E;
+            padding-top: 10px;
+            border-top: 2px solid #B714DF;
+            margin-top: 10px;
+        }
+
+        .metodo-pago {
+            margin-bottom: 20px;
+        }
+
+            .metodo-pago h2 {
+                color: #F10F6E;
+                margin-bottom: 15px;
+                text-align: center;
+            }
+
+        .select-pago {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #6423E1;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1em;
+            margin-bottom: 15px;
+        }
+
+            .select-pago:focus {
+                border-color: #F10F6E;
+            }
+
+        .acciones {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-accion {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-volver {
+            background: #2D2D44;
+            color: white;
+        }
+
+            .btn-volver:hover {
+                background: #3D3D5C;
+            }
+
+        .btn-cobrar {
+            background: #6423E1;
+            color: white;
+        }
+
+            .btn-cobrar:hover {
+                background: #B714DF;
+            }
+
+        .mensaje-exito {
+            text-align: center;
+            padding: 30px;
+            background: rgba(0, 200, 83, 0.1);
+            border-radius: 10px;
+            border: 2px solid #00C853;
+            margin-top: 20px;
+            display: none;
+        }
+
+            .mensaje-exito.mostrar {
+                display: block;
+            }
+
+        .icono-exito {
+            font-size: 3em;
+            color: #00C853;
+            margin-bottom: 15px;
+        }
+
+        .mensaje-exito h2 {
+            color: #00C853;
+            margin-bottom: 10px;
+        }
+
+        .info-venta {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: left;
+        }
+
+            .info-venta p {
+                margin: 5px 0;
+                font-size: 0.9em;
+            }
+
+        .btn-nueva-venta {
+            background: #F10F6E;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+            .btn-nueva-venta:hover {
+                background: #D40A5F;
+            }
+
+        @media (max-width: 768px) {
+            .contenedor {
+                width: 95%;
+                padding: 15px;
+            }
+
+            .acciones {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            header p {
+                font-size: 1em;
+            }
+
+            .btn-accion {
+                padding: 12px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎬 CineStellar</h1>
+        <p>Proceso de Cobro</p>
+    </header>
+
+    <div class="contenedor">
+        <div class="resumen-compra">
+            <h2>📋 Resumen de tu Compra</h2>
+            <div class="lista-resumen" id="lista-resumen">
+
+            </div>
+            <div class="total-final">
+                <span>TOTAL A PAGAR:</span>
+                <span id="total-pagar">$0.00</span>
+            </div>
+        </div>
+
+        <div class="metodo-pago">
+            <h2>💳 Método de Pago</h2>
+            <select class="select-pago" id="select-pago">
+                <option value="">Selecciona un método de pago</option>
+                <option value="efectivo">💵 Efectivo</option>
+                <option value="tarjeta">💳 Tarjeta</option>
+                <option value="transferencia">📱 Transferencia</option>
+            </select>
+        </div>
+
+        <div class="acciones">
+            <a href="pedido.html" class="btn-accion btn-volver">
+                ↩️ Volver al Ticket
+            </a>
+            <button class="btn-accion btn-cobrar" id="btn-procesar-cobro">
+                💳 Procesar Cobro
+            </button>
+        </div>
+
+        <div class="mensaje-exito" id="mensaje-exito">
+            <div class="icono-exito">✅</div>
+            <h2>¡Venta Exitosa!</h2>
+            <p>El pago ha sido procesado correctamente. ¡Gracias por tu compra!</p>
+
+            <div class="info-venta">
+                <p><strong>Número de Ticket:</strong> <span id="numero-ticket-exito"></span></p>
+                <p><strong>Fecha:</strong> <span id="fecha-venta"></span></p>
+                <p><strong>Total:</strong> <span id="total-venta"></span></p>
+                <p><strong>Método:</strong> <span id="metodo-usado"></span></p>
+            </div>
+
+            <button class="btn-nueva-venta" id="btn-nueva-venta">
+                🎬 Nueva Venta
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const ticket = JSON.parse(localStorage.getItem("ticket")) || [];
+        const listaResumen = document.getElementById("lista-resumen");
+        const totalPagarElement = document.getElementById("total-pagar");
+        const selectPago = document.getElementById("select-pago");
+        const btnProcesarCobro = document.getElementById("btn-procesar-cobro");
+        const mensajeExito = document.getElementById("mensaje-exito");
+        const btnNuevaVenta = document.getElementById("btn-nueva-venta");
+        const fechaVentaElement = document.getElementById("fecha-venta");
+        const metodoUsadoElement = document.getElementById("metodo-usado");
+        const totalVentaElement = document.getElementById("total-venta");
+        const numeroTicketExitoElement = document.getElementById("numero-ticket-exito");
+
+        let totalVenta = 0;
+
+        function mostrarResumenCompra() {
+            listaResumen.replaceChildren();
+
+            if (ticket.length === 0) {
+                const mensajeVacio = document.createElement("div");
+                mensajeVacio.style.textAlign = "center";
+                mensajeVacio.style.color = "#888";
+                mensajeVacio.style.padding = "20px";
+                mensajeVacio.textContent = "No hay productos en el ticket";
+                listaResumen.appendChild(mensajeVacio);
+                return;
+            }
+
+            ticket.forEach(item => {
+                const itemDiv = document.createElement("div");
+                itemDiv.className = "item-resumen";
+
+                const nombre = document.createElement("span");
+                nombre.textContent = `${item.cantidad} x ${item.nombre}`;
+
+                const subtotal = document.createElement("span");
+                subtotal.textContent = `$${(item.precio * item.cantidad).toFixed(2)}`;
+
+                itemDiv.appendChild(nombre);
+                itemDiv.appendChild(subtotal);
+                listaResumen.appendChild(itemDiv);
+            });
+
+            const subtotal = ticket.reduce((total, item) => {
+                return total + (item.precio * item.cantidad);
+            }, 0);
+
+            const iva = subtotal * 0.16;
+            totalVenta = subtotal + iva;
+
+            totalPagarElement.textContent = `$${totalVenta.toFixed(2)}`;
+        }
+
+        function procesarCobro() {
+            const metodoPago = selectPago.value;
+
+            if (!metodoPago) {
+                alert("❌ Por favor selecciona un método de pago");
+                return;
+            }
+
+            if (ticket.length === 0) {
+                alert("❌ No hay productos en el ticket");
+                return;
+            }
+
+            mostrarMensajeExito(metodoPago);
+        }
+
+        function mostrarMensajeExito(metodoPago) {
+            const ahora = new Date();
+            fechaVentaElement.textContent = ahora.toLocaleString();
+            metodoUsadoElement.textContent = metodoPago.charAt(0).toUpperCase() + metodoPago.slice(1);
+            totalVentaElement.textContent = `$${totalVenta.toFixed(2)}`;
+
+            const numeroTicket = `CINE-${Date.now().toString().slice(-6)}`;
+            numeroTicketExitoElement.textContent = numeroTicket;
+
+            guardarVentaEnHistorial(metodoPago, numeroTicket);
+            localStorage.removeItem("ticket");
+            mensajeExito.classList.add("mostrar");
+            document.querySelector(".acciones").style.display = "none";
+            document.querySelector(".metodo-pago").style.display = "none";
+        }
+
+        function guardarVentaEnHistorial(metodoPago, numeroTicket) {
+            const historial = JSON.parse(localStorage.getItem("historialVentas")) || [];
+
+            const nuevaVenta = {
+                fecha: new Date().toISOString(),
+                ticket: [...ticket],
+                total: totalVenta,
+                metodoPago: metodoPago,
+                numeroTicket: numeroTicket
+            };
+
+            historial.push(nuevaVenta);
+            localStorage.setItem("historialVentas", JSON.stringify(historial));
+        }
+        btnProcesarCobro.addEventListener("click", procesarCobro);
+
+        btnNuevaVenta.addEventListener("click", function () {
+            window.location.href = "index.html";
+        });
+        mostrarResumenCompra();
+
+        if (ticket.length === 0) {
+            selectPago.disabled = true;
+            btnProcesarCobro.disabled = true;
+            btnProcesarCobro.style.opacity = "0.5";
+            btnProcesarCobro.style.cursor = "not-allowed";
+        }
+    </script>
+</body>
+</html>
